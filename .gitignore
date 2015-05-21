@@ -1,0 +1,5 @@
+*.dict
+*~
+#*
+*.pyc
+.ipynb_checkpoints/

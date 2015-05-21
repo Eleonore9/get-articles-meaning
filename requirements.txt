@@ -1,0 +1,9 @@
+numpy
+scipy
+python-dateutil
+matplotlib
+ipython[all]
+
+nltk
+textblob
+gensim
