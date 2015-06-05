@@ -1,9 +1,7 @@
-numpy
-scipy
-python-dateutil
 matplotlib
 ipython[all]
-
-nltk
-textblob
-gensim
+scipy
+pandas
+sympy
+nose
+scikit-learn
