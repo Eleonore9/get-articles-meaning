@@ -1,10 +1,11 @@
-#!/home/eleonore/virtenvs/bin/python
+#!/home/eleonore/virtenvs/textblob_gensim/bin/python2.7
 # -*- coding: utf-8 -*-
 
 from nltk.stem.wordnet import WordNetLemmatizer
 from gensim import models
 from gensim.corpora import Dictionary
 import string, re, codecs
+
 
 ## Global variables
 stop_words = ['a', 'also', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for',
@@ -77,7 +78,7 @@ def get_topics(text_file):
 if __name__ == "__main__":
     #print get_topics("zen.txt")
 
-    print get_topics('conrad2013_melanoma.txt')
-    #p = parse_text('conrad2013_melanoma.txt')
+    print get_topics('articles/conrad2013_melanoma.txt')
+    #p = parse_text('articles/conrad2013_melanoma.txt')
     #print get_tokens(p)
     
