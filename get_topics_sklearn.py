@@ -6,13 +6,15 @@ import get_topics as gt
 from sklearn.feature_extraction.text import CountVectorizer
 
 # Get text documents
-ARTICLES = []
+ARTICLES = ["articles/conrad2013_melanoma.txt"]
 TEXTS = []
 
 for article in ARTICLES:
     a = gt.parse_text(article)
     b = gt.get_tokens(a)
-    TEXTS.append(gt.lemmatize_tokens(b))
+    TEXTS.extend(gt.lemmatize_tokens(b))
+
+print TEXTS
 
 # Initialize the "CountVectorizer" object
 vectorizer = CountVectorizer(analyzer = "word",   \

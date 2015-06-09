@@ -1,6 +1,5 @@
-#!/home/eleonore/virtenvs/textblob_gensim/bin/python2.7
+#!/home/eleonore/virtenvs/nltk-gensim-skl/bin/python2.7
 # -*- coding: utf-8 -*-
-
 from nltk.stem.wordnet import WordNetLemmatizer
 from gensim import models
 from gensim.corpora import Dictionary
