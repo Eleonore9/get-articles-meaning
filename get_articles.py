@@ -1,6 +1,6 @@
 #!/home/eleonore/virtenvs/nltk-gensim-skl/bin/python2.7
 # -*- coding: utf-8 -*-
-import os, sys, time, json
+import os, sys, time, json, codecs
 from os import listdir, mkdir
 from os.path import isfile, join
 from bs4 import BeautifulSoup
@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 
 ARTICLES = {}
 
-spe_char = {u'\u2013' : '-'}
+spe_char = {u'\u2013': '-', u'\xb1': "plus-minus"}
 
 def debug_unicode(text):
     #print "Opening article with BS..."
@@ -94,35 +94,34 @@ def write_txt_category(category, list_category, in_path="../elife-articles/", ou
         article_text = ""
         soup = BeautifulSoup(open(in_path+article), ["lxml", "xml"])
         abstract_tag = soup.find_all("abstract")
-        boxed_tag = soup.find("boxed-text")
+        body_tag = soup.find_all("body")
+        for b in body_tag[0]:
+            try:
+                article_text += " " + b.p.text
+            except:
+                for i in b:
+                    try:
+                        article_text += " " + i.p.text
+                    except:
+                        article_text += " " + i.string
         if abstract_tag:
             for abstract in abstract_tag:
-                abstract_text = abstract_tag.p.text
+                abstract_text = abstract.p.text
                 article_text += "\n" + abstract_text
-        if boxed_tag:
-            boxed_text = boxed_tag.p.text
-            article_text += "\n" + boxed_text
-        print debug_unicode(article_text)
-        print "*" * 30
-        #####################################
-        ## Trying to handle a unicode error:
-        #for i in abstract_text:
-            #if i in spe_char.keys():
-                #print i
-        #abstract = [abstract_text.replace(i, spe_char.get(i)) if i in spe_char.keys()
-                    #else abstract_text for i in abstract_text]
-        #print abstract
-        #####################################
-        #if not category in listdir(out_path):
-            # print 1
-    #         mkdir(out_path+category)
-    #         print category, " folder created!"
-    #     print 2
-    #     file_path = out_path + category + "/" + article.replace("xml", "txt")
-    #     # Write to a text file:
-    #     with open(file_path, 'w') as f:
-    #         f.write(abstract[0])
-    # print "Wrote %d xml articles to text format." % len(list_category[:1])
+
+        for a in article_text:
+            if a in spe_char.keys():
+                print "*"
+                final_article = article_text.replace(a, unicode(spe_char.get(a)))
+
+        if not category in listdir(out_path):
+            mkdir(out_path+category)
+            print category, " folder created!"
+        file_path = out_path + category + "/" + article.replace("xml", "txt")
+        # Write to a text file:
+        with codecs.open(file_path, mode='w', encoding='utf-8') as f:
+            f.write(final_article)
+    print "Wrote %d xml articles to text format." % len(list_category[:1])
 
 
 if __name__ == "__main__":
@@ -137,12 +136,14 @@ if __name__ == "__main__":
     #store_articles_json("articles.json", ARTICLES)
 
     ## List the xml files for a category
-    #art_dict = read_articles_json("articles.json")
+    art_dict = read_articles_json("articles.json")
     #list_xml = get_xml_category("Neuroscience", art_dict)
     #write_txt_category("Neuroscience", list_xml)
+    list_xml2 = get_xml_category("Cell biology", art_dict)
+    write_txt_category("Cell biology", list_xml2)
 
-    debug_unicode("../elife-articles/elife03005.xml")
-    
+    #debug_unicode("../elife-articles/elife03005.xml")
+    print "\n"
     elapsedTime = time.time() - startTime
     print "This script took %f seconds to run" % elapsedTime
     
