@@ -5,18 +5,18 @@ from gensim import models
 from gensim.corpora import Dictionary
 from os import listdir
 from os.path import isfile, join
-import string, re, codecs, time
+import string, re, codecs, time, json
 
 
 ## Global variables
 stop_words = ['a', 'also', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'but', 'for',
               'from', 'has', 'he', 'if', 'in', 'is', 'it', 'its', 'it\'s', 'not',
-              'of', 'on', 'than', 'that', 'the', 'therefore', 'to', 'was',
-              'were', 'will', 'with']
+              'of', 'on', 'our', 'than', 'that', 'the', 'therefore', 'to', 'was',
+              'were', 'will', 'with', 'may', 'need', 'have', 'been', 'their', 'this',
+              'these', 'which', 'do', 'did', 'red', 'blue', 'green', 'bar', 'chart',
+              'arrowhead', 'arrow', 'vice', 'versa']
 
-extra_sw = ['may', 'need', 'have', 'been', 'their', 'this', 'these', 'which', 'do', 'did']
-
-spe_char = {u'β': 'beta', u'α': 'alpha', u'\u03bcm': 'mu', u'\xb5m': 'micron'}
+spe_char = {u'β': 'beta', u'α': 'alpha', u'µm': 'micron'}
 
 ## Functions to break up the process:
 def parse_text(text_file):
@@ -34,9 +34,10 @@ def get_tokens(text_parsed):
     # Remove punctuation and stop words
     tokens = [[filter(lambda x:x not in string.punctuation, i)
                for i in txt if i != '' and i not in stop_words] for txt in texts]
-    tokens = [[filter(lambda x:x not in extra_sw, i)
-               for i in txt if len(i) > 2 and not i.isdigit()] for txt in tokens]
-    return tokens
+    #print len(tokens), [len(txt) for txt in tokens]
+    tokens_cleaned = [[i for i in txt if len(i) > 2 and not i.isdigit()] for txt in tokens]
+    #print len(tokens_cleaned), [len(txt) for txt in tokens_cleaned]
+    return tokens_cleaned
 
 def lemmatize_tokens(tokens):
     "Gets tokens and retrieves lemmatised tokens."
@@ -62,11 +63,13 @@ def tfidf_and_lsi(lemma, bow):
     ## Build the LSI model
     lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=6)
     corpus_lsi = lsi[corpus_tfidf]
-    list_topics = [] 
+    list_topics = []
     for i in range(lsi.num_topics):
-        print lsi.show_topic(i)
         list_topics.extend(lsi.show_topic(i))
-    topics = [i[1] for i in list_topics]
+    list_topics.sort(key=lambda tup: tup[0], reverse=True)
+    # for i in range(lsi.num_topics):
+    #     list_topics.extend(lsi.show_topic(i))
+    topics = [i[1] for i in list_topics[:10]]
     return topics
 
 ## Function to retrieve topics using nltk
@@ -84,8 +87,25 @@ def list_all_articles(path):
     print "There are %d articles in %s" % (len(articles), path)
     return {"path": path, "articles": articles}
 
-def get_articles_topics(list_articles):
-    pass
+# Write the topics to a json file:
+#{"Neuroscience": [[topics_file1], [topics_file2]...]
+# "Cell biology": [[], []...]}
+def get_articles_topics(path, filename):
+    "Store the topics in a json object and dump to a file."
+    all_topics = {}
+    #Get the directories in a path
+    dirs = [d for d in listdir(path) if not isfile(join(path, d))]
+    #For each dir and for each file in a dir
+    for d in dirs:
+        all_topics[d] = []
+        txt_files = [f for f in listdir(path+d) if isfile(join(path+d, f))]
+        print txt_files
+        for f in txt_files:
+            all_topics[d].append(get_topics(path+d+'/'+f))
+    with open(filename, 'w') as f:
+        json.dump(all_topics, f)
+    return all_topics
+    
 
 if __name__ == "__main__":
     startTime = time.time()
@@ -95,11 +115,13 @@ if __name__ == "__main__":
     #p = parse_text('articles/conrad2013_melanoma.txt')
     #print get_tokens(p)
 
-    neuro_articles = list_all_articles("articles/Neuroscience/")
-    cellbiol_articles = list_all_articles("articles/Cell biology/")
+    #neuro_articles = list_all_articles("articles/Neuroscience/")
+    #cellbiol_articles = list_all_articles("articles/Cell biology/")
     #print get_tokens(parse_text(neuro_articles.get("path") + neuro_articles.get("articles")[0]))
-    print get_topics(neuro_articles.get("path") + neuro_articles.get("articles")[0])
+    #print get_topics(neuro_articles.get("path") + neuro_articles.get("articles")[0])
 
+    print get_articles_topics("articles/", "articles_topics.json")
+    
     print "\n"
     elapsedTime = time.time() - startTime
     print "This script took %f seconds to run" % elapsedTime
