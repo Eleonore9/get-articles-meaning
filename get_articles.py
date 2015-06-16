@@ -88,7 +88,7 @@ def get_xml_category(category, json_articles):
 
 # Write txt files for each xml in a category:
 def write_txt_category(category, list_category, in_path="../elife-articles/", out_path="./articles/"):
-    # Go throught the list and use BS to get text content.
+    "Go throught the list and use BS to get text content."
     for article in list_category:
         print in_path+article
         article_text = ""
@@ -111,7 +111,6 @@ def write_txt_category(category, list_category, in_path="../elife-articles/", ou
 
         for a in article_text:
             if a in spe_char.keys():
-                print "*"
                 final_article = article_text.replace(a, unicode(spe_char.get(a)))
 
         if not category in listdir(out_path):
