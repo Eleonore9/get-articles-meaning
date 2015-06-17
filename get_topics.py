@@ -88,8 +88,8 @@ def list_all_articles(path):
     return {"path": path, "articles": articles}
 
 # Write the topics to a json file:
-#{"Neuroscience": [[topics_file1], [topics_file2]...]
-# "Cell biology": [[], []...]}
+#{"Neuroscience": {"pub_id1":[topics_file1], "pub_id2":[topics_file2]...},
+# "Cell biology": {[], []...}}
 def get_articles_topics(path, filename):
     "Store the topics in a json object and dump to a file."
     all_topics = {}
@@ -97,11 +97,11 @@ def get_articles_topics(path, filename):
     dirs = [d for d in listdir(path) if not isfile(join(path, d))]
     #For each dir and for each file in a dir
     for d in dirs:
-        all_topics[d] = []
+        all_topics[d] = {}
         txt_files = [f for f in listdir(path+d) if isfile(join(path+d, f))]
         print txt_files
         for f in txt_files:
-            all_topics[d].append(get_topics(path+d+'/'+f))
+            all_topics[d][f[:-4]] = get_topics(path+d+'/'+f)
     with open(filename, 'w') as f:
         json.dump(all_topics, f)
     return all_topics
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     #print get_tokens(parse_text(neuro_articles.get("path") + neuro_articles.get("articles")[0]))
     #print get_topics(neuro_articles.get("path") + neuro_articles.get("articles")[0])
 
-    print get_articles_topics("articles/", "articles_topics.json")
+    print get_articles_topics("articles/", "filenames_topics.json")
     
     print "\n"
     elapsedTime = time.time() - startTime

@@ -16,27 +16,6 @@ ARTICLES = {}
 
 spe_char = {u'\u2013': '-', u'\xb1': "plus-minus"}
 
-def debug_unicode(text):
-    #print "Opening article with BS..."
-    soup = BeautifulSoup(open(text), ["lxml", "xml"])
-    #print "Getting the abstract content..."
-    abstract_block = soup.find_all("abstract")
-    print len(abstract_block)
-    for abstract in abstract_block:
-        if abstract:
-            abstract_text = abstract.p.text
-            print abstract_text
-            print "*" * 30
-    # counter = 0
-    # try:
-    #     for char in abstract_text:
-    #         counter += 1
-    #         pass
-    # except UnicodeEncodeError:
-    #     print "Error after character ", counter
-    #     print char
-    # return counter
-
 def sort_articles(path="../elife-articles/"):
     # Get all xml files from path
     path_files = [f for f in listdir(path) if isfile(join(path,f))] or []
@@ -141,7 +120,6 @@ if __name__ == "__main__":
     list_xml2 = get_xml_category("Cell biology", art_dict)
     write_txt_category("Cell biology", list_xml2)
 
-    #debug_unicode("../elife-articles/elife03005.xml")
     print "\n"
     elapsedTime = time.time() - startTime
     print "This script took %f seconds to run" % elapsedTime
