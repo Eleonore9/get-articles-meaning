@@ -72,6 +72,24 @@ def tfidf_and_lsi(lemma, bow):
     topics = [i[1] for i in list_topics[:10]]
     return topics
 
+def tfidf_and_lsi2(lemma, bow):
+    "Gets a bow and returns topics."
+    dictionary = Dictionary(lemma)
+    tfidf = models.TfidfModel(bow) # Transforms the count representation into the Tfidf space
+    corpus_tfidf = tfidf[bow]
+    ## Build the LSI model
+    lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=6)
+    corpus_lsi = lsi[corpus_tfidf]
+    list_topics = []
+    for i in range(lsi.num_topics):
+        list_topics.extend(lsi.show_topic(i))
+        list_topics = [(abs(i[0]), i[1]) for i in list_topics]
+        list_topics.sort(key=lambda tup: tup[0], reverse=True)
+        # for i in range(lsi.num_topics):
+        #     list_topics.extend(lsi.show_topic(i))
+        #topics = [i[1] for i in list_topics[:10]]
+        return list_topics
+
 ## Function to retrieve topics using nltk
 def get_topics(text_file):
     txt = parse_text(text_file)
@@ -80,6 +98,14 @@ def get_topics(text_file):
     lemma = lemmatize_tokens(tokens)
     bow = bag_of_words(lemma)
     return tfidf_and_lsi(lemma, bow)
+
+def get_topics_scores(text_file):
+    txt = parse_text(text_file)
+    tokens = get_tokens(txt)
+    #print tokens
+    lemma = lemmatize_tokens(tokens)
+    bow = bag_of_words(lemma)
+    return tfidf_and_lsi2(lemma, bow)
 
 ## Get all text articles from a path and retrieve topics:
 def list_all_articles(path):
@@ -101,7 +127,7 @@ def get_articles_topics(path, filename):
         txt_files = [f for f in listdir(path+d) if isfile(join(path+d, f))]
         print txt_files
         for f in txt_files:
-            all_topics[d][f[:-4]] = get_topics(path+d+'/'+f)
+            all_topics[d][f[:-4]] = get_topics_scores(path+d+'/'+f)
     with open(filename, 'w') as f:
         json.dump(all_topics, f)
     return all_topics
@@ -118,9 +144,9 @@ if __name__ == "__main__":
     #neuro_articles = list_all_articles("articles/Neuroscience/")
     #cellbiol_articles = list_all_articles("articles/Cell biology/")
     #print get_tokens(parse_text(neuro_articles.get("path") + neuro_articles.get("articles")[0]))
-    #print get_topics(neuro_articles.get("path") + neuro_articles.get("articles")[0])
+    #print get_topics_scores(neuro_articles.get("path") + neuro_articles.get("articles")[0])
 
-    print get_articles_topics("articles/", "filenames_topics.json")
+    print get_articles_topics("articles/", "filenames_topics_scores.json")
     
     print "\n"
     elapsedTime = time.time() - startTime
