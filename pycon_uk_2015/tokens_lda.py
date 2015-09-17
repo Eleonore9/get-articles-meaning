@@ -5,7 +5,10 @@ from gensim import models
 from gensim.corpora import Dictionary
 from os import listdir
 from os.path import isfile, join
-import string, re, codecs, time, json
+import string
+import codecs
+import time
+import json
 
 
 # Global variables
@@ -49,7 +52,6 @@ def lemmatize_tokens(tokens):
     lemma = [[lmtzr.lemmatize(word) for word in data] for data in tokens]
     return lemma
 
-
 def bag_of_words(lemma):
     "Takes in lemmatised words and returns a bow."
     # Create bag of words from dictionnary
@@ -57,16 +59,16 @@ def bag_of_words(lemma):
     dictionary.save('text.dict')
     # Term frequency–inverse document frequency (TF-IDF)
     bow = [dictionary.doc2bow(l) for l in lemma] # Calculates inverse document counts for all terms
-    return bow
+    return (bow, dictionary)
 
 
-def lda_model(bow):
-    lda = ldamodel.LdaModel(corpus, num_topics=2, id2word = dictionary, passes=20)
+def lda_model(bow_dict):
+    lda = models.ldamodel.LdaModel(bow_dict[0], num_topics=2, id2word=bow_dict[1], passes=20)
     return lda
 
 
-def process_lda_results(lda):
-    pass
+def process_lda_results(ldamodel):
+    return ldamodel.print_topics(num_topics=2, num_words=4)
 
 
 def get_lda_from_text(text_file):
@@ -75,8 +77,8 @@ def get_lda_from_text(text_file):
     lemma = lemmatize_tokens(tokens)
     bow = bag_of_words(lemma)
     lda = lda_model(bow)
-    return lda
-    pass
+    data = process_lda_results(lda)
+    return data
 
 
 # Get all text articles from a path and retrieve topics:
@@ -119,7 +121,9 @@ if __name__ == "__main__":
     # print get_tokens(parse_text(neuro_articles.get("path") + neuro_articles.get("articles")[0]))
     # print get_topics_scores(neuro_articles.get("path") + neuro_articles.get("articles")[0])
 
-    print get_articles_topics("articles/", "filenames_topics_scores.json")
+    # print get_articles_topics("../articles/", "filenames_topics_scores.json")
+
+    get_lda_from_text('articles/conrad2013_melanoma.txt')
     
     print "\n"
     elapsedTime = time.time() - startTime
