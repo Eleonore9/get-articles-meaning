@@ -1,7 +1,10 @@
-Here are my [slides](http://bit.ly/Eleonore_PyDataldn15)!
-Note: use the cursor on the lower right corner to navigate right and down through the slideshow.
+Aim: help researchers in the bilbiography process. Don't miss interesting/relevant papers!
 
-The article I used can be found in [this](http://github.com/elifesciences/elife-articles) repo.
+Idea: get meaning from scientific articles content and classify new articles.
 
-Talk abstract:
-![PyData_abstract](http://raw.github.com/Eleonore9/get-articles-meaning/master/img/abstract.png)
+Tools: IPython/Jupyter notebook, Python 2, Matplotlib, Gensim,Scikit-learn.
+
+My [slides](http://nbviewer.ipython.org/format/slides/github/Eleonore9/get-articles-meaning/blob/master/pycon_uk_2015/Eleonore_PyCon_UK2015.ipynb#/) for PyCon UK 2015.
+My [slides](http://bit.ly/Eleonore_PyDataldn15) for PyData London 2015.
+
+The articles used can be found in [this](http://github.com/elifesciences/elife-articles) repo.
