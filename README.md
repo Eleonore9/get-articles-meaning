@@ -1,10 +1,23 @@
-Aim: help researchers in the bilbiography process. Don't miss interesting/relevant papers!
+__Aim__:
 
-Idea: get meaning from scientific articles content and classify new articles.
+Help researchers in the bilbiography process. Don't miss interesting/relevant papers!
 
-Tools: IPython/Jupyter notebook, Python 2, Matplotlib, Gensim,Scikit-learn.
 
-My [slides](http://nbviewer.ipython.org/format/slides/github/Eleonore9/get-articles-meaning/blob/master/pycon_uk_2015/Eleonore_PyCon_UK2015.ipynb#/) for PyCon UK 2015.
-My [slides](http://bit.ly/Eleonore_PyDataldn15) for PyData London 2015.
+__Idea__:
 
-The articles used can be found in [this](http://github.com/elifesciences/elife-articles) repo.
+Get meaning from scientific articles content and classify new articles.
+
+
+__Tools__:
+
+IPython/Jupyter notebook, Python 2, Matplotlib, Gensim,Scikit-learn.
+
+
+__Slides__:
+
+This project was presented at PyData London 2015 and PyCon UK 2015 conferences.
+Here are the latest [version](http://bit.ly/Eleonore_pyconuk2015).
+
+
+
+The articles used can be found on [Github](http://github.com/elifesciences/elife-articles) or in the "elife-articles/" directory.
