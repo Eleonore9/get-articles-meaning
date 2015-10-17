@@ -136,17 +136,17 @@ def get_articles_topics(path, filename):
 if __name__ == "__main__":
     startTime = time.time()
     
-    #print get_topics("zen.txt")
-    #print get_topics('articles/conrad2013_melanoma.txt')
-    #p = parse_text('articles/conrad2013_melanoma.txt')
+    #print get_topics("../articles/zen.txt")
+    #print get_topics('../articles/conrad2013_melanoma.txt')
+    #p = parse_text('../articles/conrad2013_melanoma.txt')
     #print get_tokens(p)
 
-    #neuro_articles = list_all_articles("articles/Neuroscience/")
-    #cellbiol_articles = list_all_articles("articles/Cell biology/")
+    #neuro_articles = list_all_articles("../articles/Neuroscience/")
+    #cellbiol_articles = list_all_articles("../articles/Cell biology/")
     #print get_tokens(parse_text(neuro_articles.get("path") + neuro_articles.get("articles")[0]))
     #print get_topics_scores(neuro_articles.get("path") + neuro_articles.get("articles")[0])
 
-    print get_articles_topics("articles/", "filenames_topics_scores.json")
+    print get_articles_topics("../articles/", "../json/filenames_topics_scores.json")
     
     print "\n"
     elapsedTime = time.time() - startTime

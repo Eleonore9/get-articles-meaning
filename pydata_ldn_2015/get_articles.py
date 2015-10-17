@@ -66,7 +66,7 @@ def get_xml_category(category, json_articles):
     return xml_category
 
 # Write txt files for each xml in a category:
-def write_txt_category(category, list_category, in_path="../elife-articles/", out_path="./articles/"):
+def write_txt_category(category, list_category, in_path="../elife-articles/", out_path="../articles/"):
     "Go throught the list and use BS to get text content."
     for article in list_category:
         print in_path+article
@@ -111,10 +111,10 @@ if __name__ == "__main__":
     #for i in ARTICLES.keys():
         #print "%d articles in the category %s" % (len(ARTICLES.get(i)), i)
     ## Store the dictionnary
-    #store_articles_json("articles.json", ARTICLES)
+    #store_articles_json("../json/articles.json", ARTICLES)
 
     ## List the xml files for a category
-    art_dict = read_articles_json("articles.json")
+    art_dict = read_articles_json("../json/articles.json")
     #list_xml = get_xml_category("Neuroscience", art_dict)
     #write_txt_category("Neuroscience", list_xml)
     list_xml2 = get_xml_category("Cell biology", art_dict)
