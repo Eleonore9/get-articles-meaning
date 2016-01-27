@@ -8,7 +8,7 @@ from os.path import isfile, join
 import string, re, codecs, time, json
 
 
-## Global variables
+# Global variables
 stop_words = ['a', 'also', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'but', 'for',
               'from', 'has', 'he', 'if', 'in', 'is', 'it', 'its', 'it\'s', 'not',
               'of', 'on', 'our', 'than', 'that', 'the', 'therefore', 'to', 'was',
@@ -18,15 +18,18 @@ stop_words = ['a', 'also', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'but', 'f
 
 spe_char = {u'β': 'beta', u'α': 'alpha', u'µm': 'micron'}
 
-## Functions to break up the process:
+
+# Functions to break up the process:
 def parse_text(text_file):
     "Gets a text file outputs a list of strings."
     with codecs.open(text_file, mode='r', encoding='utf-8') as f:
         read = f.read()
-        r = [read.replace(unicode(i), spe_char.get(i)) for i in read if i in spe_char.keys()] or [read]
+        r = [read.replace(unicode(i), spe_char.get(i)) for i in read
+             if i in spe_char.keys()] or [read]
         text = [line for line in r[0].strip().split('. ') if line != '']
         return text
-    
+
+
 def get_tokens(text_parsed):
     "Gets a text and retrieves tokens."
     # Tokenisation
@@ -34,10 +37,12 @@ def get_tokens(text_parsed):
     # Remove punctuation and stop words
     tokens = [[filter(lambda x:x not in string.punctuation, i)
                for i in txt if i != '' and i not in stop_words] for txt in texts]
-    #print len(tokens), [len(txt) for txt in tokens]
-    tokens_cleaned = [[i for i in txt if len(i) > 2 and not i.isdigit()] for txt in tokens]
-    #print len(tokens_cleaned), [len(txt) for txt in tokens_cleaned]
+    # print len(tokens), [len(txt) for txt in tokens]
+    tokens_cleaned = [[i for i in txt if len(i) > 2 and not i.isdigit()]
+                      for txt in tokens]
+    # print len(tokens_cleaned), [len(txt) for txt in tokens_cleaned]
     return tokens_cleaned
+
 
 def lemmatize_tokens(tokens):
     "Gets tokens and retrieves lemmatised tokens."
@@ -46,21 +51,25 @@ def lemmatize_tokens(tokens):
     lemma = [[lmtzr.lemmatize(word) for word in data] for data in tokens]
     return lemma
 
+
 def bag_of_words(lemma):
     "Takes in lemmatised words and returns a bow."
-    ## Create bag of words from dictionnary
+    # Create bag of words from dictionnary
     dictionary = Dictionary(lemma)
-    dictionary.save('text.dict')
-    ## Term frequency–inverse document frequency (TF-IDF)
-    bow = [dictionary.doc2bow(l) for l in lemma] # Calculates inverse document counts for all terms
+    dictionary.save('../dicts/bow-text.dict')
+    # Term frequency–inverse document frequency (TF-IDF)
+    # Calculates inverse document counts for all terms
+    bow = [dictionary.doc2bow(l) for l in lemma]
     return bow
+
 
 def tfidf_and_lsi(lemma, bow):
     "Gets a bow and returns topics."
     dictionary = Dictionary(lemma)
-    tfidf = models.TfidfModel(bow) # Transforms the count representation into the Tfidf space
+    # Transform the count representation into the Tfidf space
+    tfidf = models.TfidfModel(bow)
     corpus_tfidf = tfidf[bow]
-    ## Build the LSI model
+    # Build the LSI model
     lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=6)
     corpus_lsi = lsi[corpus_tfidf]
     list_topics = []
@@ -72,12 +81,14 @@ def tfidf_and_lsi(lemma, bow):
     topics = [i[1] for i in list_topics[:10]]
     return topics
 
+
 def tfidf_and_lsi2(lemma, bow):
     "Gets a bow and returns topics."
     dictionary = Dictionary(lemma)
-    tfidf = models.TfidfModel(bow) # Transforms the count representation into the Tfidf space
+    # Transform the count representation into the Tfidf space
+    tfidf = models.TfidfModel(bow)
     corpus_tfidf = tfidf[bow]
-    ## Build the LSI model
+    # Build the LSI model
     lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=6)
     corpus_lsi = lsi[corpus_tfidf]
     list_topics = []
@@ -87,41 +98,45 @@ def tfidf_and_lsi2(lemma, bow):
         list_topics.sort(key=lambda tup: tup[0], reverse=True)
         # for i in range(lsi.num_topics):
         #     list_topics.extend(lsi.show_topic(i))
-        #topics = [i[1] for i in list_topics[:10]]
+        # topics = [i[1] for i in list_topics[:10]]
         return list_topics
 
-## Function to retrieve topics using nltk
+
+# Function to retrieve topics using nltk
 def get_topics(text_file):
     txt = parse_text(text_file)
     tokens = get_tokens(txt)
-    #print tokens
+    # print tokens
     lemma = lemmatize_tokens(tokens)
     bow = bag_of_words(lemma)
     return tfidf_and_lsi(lemma, bow)
 
+
 def get_topics_scores(text_file):
     txt = parse_text(text_file)
     tokens = get_tokens(txt)
-    #print tokens
+    # print tokens
     lemma = lemmatize_tokens(tokens)
     bow = bag_of_words(lemma)
     return tfidf_and_lsi2(lemma, bow)
 
-## Get all text articles from a path and retrieve topics:
+
+# Get all text articles from a path and retrieve topics:
 def list_all_articles(path):
     articles = [f for f in listdir(path) if isfile(join(path, f))] or []
     print "There are %d articles in %s" % (len(articles), path)
     return {"path": path, "articles": articles}
 
+
 # Write the topics to a json file:
-#{"Neuroscience": {"pub_id1":[topics_file1], "pub_id2":[topics_file2]...},
-# "Cell biology": {[], []...}}
+# {"Neuroscience": {"pub_id1":[topics_file1], "pub_id2":[topics_file2]...},
+#  "Cell biology": {[], []...}}
 def get_articles_topics(path, filename):
     "Store the topics in a json object and dump to a file."
     all_topics = {}
-    #Get the directories in a path
+    # Get the directories in a path
     dirs = [d for d in listdir(path) if not isfile(join(path, d))]
-    #For each dir and for each file in a dir
+    # For each dir and for each file in a dir
     for d in dirs:
         all_topics[d] = {}
         txt_files = [f for f in listdir(path+d) if isfile(join(path+d, f))]

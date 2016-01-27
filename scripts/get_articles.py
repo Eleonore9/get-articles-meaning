@@ -5,16 +5,18 @@ from os import listdir, mkdir
 from os.path import isfile, join
 from bs4 import BeautifulSoup
 
-## Let's parse xml articles from eLifeScience:
 
-## 1) Use beautiful soup to get the subject, first auth, id
-## 2) Add metadata to ARTICLES: {"subject": [{article, subgroup, name, year}]}
-## 3) Create a directory with the "subject" name and copy the cleaned content
-## to a text file named: id.txt
+# Let's parse xml articles from eLifeScience:
+
+# 1) Use beautiful soup to get the subject, first auth, id
+# 2) Add metadata to ARTICLES: {"subject": [{article, subgroup, name, year}]}
+# 3) Create a directory with the "subject" name and copy the cleaned content
+# to a text file named: id.txt
 
 ARTICLES = {}
 
 spe_char = {u'\u2013': '-', u'\xb1': "plus-minus"}
+
 
 def sort_articles(path="../elife-articles/"):
     # Get all xml files from path
@@ -49,14 +51,17 @@ def sort_articles(path="../elife-articles/"):
         print "There are %d articles out of %s with a single subject." % (counter, len(xml_files))
         print "There is/are %d exception(s). \n" % errors
 
+
 def store_articles_json(filename, articles_dict):
     with open(filename, 'w') as f:
         json.dump(articles_dict, f)
+
 
 def read_articles_json(filename):
     with open(filename, 'r') as f:
         articles = json.load(f)
         return articles
+
 
 # Get xml files for a particular category:
 def get_xml_category(category, json_articles):
@@ -64,6 +69,7 @@ def get_xml_category(category, json_articles):
     cat = json_articles.get(category)
     xml_category = [f.get("file") for f in cat]
     return xml_category
+
 
 # Write txt files for each xml in a category:
 def write_txt_category(category, list_category, in_path="../elife-articles/", out_path="../articles/"):
@@ -105,18 +111,18 @@ def write_txt_category(category, list_category, in_path="../elife-articles/", ou
 if __name__ == "__main__":
     startTime = time.time()
     
-    ## Sort articles
-    #sort_articles()
-    #print "%d categories in the dictionary" % len(ARTICLES.keys())
-    #for i in ARTICLES.keys():
-        #print "%d articles in the category %s" % (len(ARTICLES.get(i)), i)
-    ## Store the dictionnary
-    #store_articles_json("../json/articles.json", ARTICLES)
+    # Sort articles
+    # sort_articles()
+    # print "%d categories in the dictionary" % len(ARTICLES.keys())
+    # for i in ARTICLES.keys():
+        # print "%d articles in the category %s" % (len(ARTICLES.get(i)), i)
+    # Store the dictionnary
+    # store_articles_json("../json/articles.json", ARTICLES)
 
-    ## List the xml files for a category
+    # List the xml files for a category
     art_dict = read_articles_json("../json/articles.json")
-    #list_xml = get_xml_category("Neuroscience", art_dict)
-    #write_txt_category("Neuroscience", list_xml)
+    # list_xml = get_xml_category("Neuroscience", art_dict)
+    # write_txt_category("Neuroscience", list_xml)
     list_xml2 = get_xml_category("Cell biology", art_dict)
     write_txt_category("Cell biology", list_xml2)
 
