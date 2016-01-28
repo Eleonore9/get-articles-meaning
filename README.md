@@ -16,7 +16,7 @@ IPython/Jupyter notebook, Python 2, Matplotlib, Gensim, Scikit-learn.
 __Slides__:
 
 This project was presented at PyData London 2015 and PyCon UK 2015 conferences.
-Here are the latest [slides](http://bit.ly/Eleonore_pyconuk2015).
+Here are the latest [slides](nbviewer.jupyter.org/format/slides/github/Eleonore9/get-articles-meaning/blob/master/notebooks/Eleonore_PyCon_UK2015.ipynb).
 
 
 
